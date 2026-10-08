@@ -1,0 +1,32 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Top-Down DP (Memoization) approach.
+     * - Recursively compute ways(n) = ways(n-1) + ways(n-2).
+     * - Store results in dp[] to avoid recomputation.
+     * 
+     * Time Complexity: O(n)
+     * Space Complexity: O(n) (dp array + recursion stack)
+     */
+
+    public static int climbStairs(int n,int[] dp) {
+        if (n < 0) return 0;
+        if (dp[n] != -1) return dp[n];
+
+        int way1 = climbStairs(n - 1, dp);
+        int way2 = climbStairs(n - 2, dp);
+
+        return dp[n] = way1 + way2;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] dp=new int[n+1];
+        dp[0]=1;
+        dp[1]=1;
+        System.out.println(climbStairs(n,dp));
+    }
+}
