@@ -1,0 +1,40 @@
+/**
+     * Recursive Fibonacci with memoization (Dynamic Programming).
+     * Why DP? 
+     * - Naive recursion recomputes the same subproblems many times.
+     * - Memoization stores results in dp[] so each subproblem is solved only once.
+     * - This reduces exponential time complexity to linear.
+     *
+     * Time Complexity: O(n)
+     * - Each Fibonacci number from 0..n is computed once.
+     * - Lookup in dp[] is O(1).
+     *
+     * Space Complexity: O(n)
+     * - For the dp[] array.
+     * - Plus recursion stack depth O(n).
+     */
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        if (n <= 0){
+            System.out.println(0);
+            return;
+        }
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 1;
+        System.out.print(fibonacci(n,dp));
+    }
+    public static int fibonacci(int n, int[] dp) {
+        if (n == 0 || n == 1) {
+            return n;
+        }
+        if (dp[n] != 0) {
+            return dp[n];
+        }
+        int fib1 = fibonacci(n - 1, dp);
+        int fib2 = fibonacci(n - 2, dp);
+        return dp[n] = fib1 + fib2;
+    }
+}
