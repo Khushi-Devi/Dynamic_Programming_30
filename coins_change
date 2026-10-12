@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Bottom-Up DP (Tabulation) approach for Coin Change.
+     * - dp[i] represents the minimum number of coins needed to make amount i.
+     * - Initialize dp[i] with a large value (amount+1) to represent a unrechable amount.
+     * - Transition: dp[i] = min(dp[i], 1 + dp[i - coin]) for each coin <= i.
+     * 
+     * Time Complexity: O(amount * coins.length)
+     * - For each amount, we iterate over all coins.
+     * 
+     * Space Complexity: O(amount)
+     * - dp[] array of size amount+1.
+     */
+
+    public static int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        dp[0] = 0; // base case: 0 coins needed to make amount 0
+        for(int i=1;i<dp.length;i++){
+            dp[i]=amount+1;
+        }
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (coin <= i) {
+                    dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
+                }
+            }
+        }
+        return dp[amount]>amount?-1:dp[amount];
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] coins = new int[n];
+        for (int i = 0; i < n; i++) {
+            coins[i] = sc.nextInt();
+        }
+        int amount = sc.nextInt();
+        System.out.println("Minimum coins needed: " + coinChange(coins, amount));
+    }
+}
