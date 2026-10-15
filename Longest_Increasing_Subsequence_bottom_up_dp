@@ -1,0 +1,51 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Bottom-Up DP (Tabulation) approach for Longest Increasing Subsequence (LIS).
+     * - dp[i] represents the length of the longest increasing subsequence ending at index i.
+     * - For each element nums[i], check all previous elements nums[j] (j < i).
+     * - If nums[j] < nums[i], then nums[i] can extend the subsequence ending at j:
+     *   dp[i] = max(dp[i], dp[j] + 1).
+     * - Keep track of the maximum length across all dp[i].
+     *
+     * Time Complexity: O(n^2)
+     * - For each i, we iterate over all j < i.
+     *
+     * Space Complexity: O(n)
+     * - dp[] array of size n.
+     */
+
+    public static int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1); // each element is at least a subsequence of length 1
+
+        int maxLen = 1;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[j] < nums[i]) {
+                    // dp[j] is the longest subsequence ending at j
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            maxLen = Math.max(maxLen, dp[i]);
+        }
+
+        return maxLen;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+
+        int[] nums = new int[n];
+        for (int i = 0; i < n; i++) {
+            nums[i] = sc.nextInt();
+        }
+
+        System.out.println("Length of LIS: " + lengthOfLIS(nums));
+    }
+}
