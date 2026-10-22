@@ -1,0 +1,91 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Top-Down DP (Memoization) approach for Edit Distance.
+     *
+     * Operations allowed:
+     * 1. Insert a character
+     * 2. Delete a character
+     * 3. Replace a character
+     *
+     * Let dp[i][j] represent the minimum number of operations needed
+     * to convert the substring word1[i...] into word2[j...].
+     *
+     * Recurrence:
+     * - If characters match, move both pointers forward.
+     * - Otherwise, try all three operations:
+     *      Insert  -> (i, j + 1)
+     *      Delete  -> (i + 1, j)
+     *      Replace -> (i + 1, j + 1)
+     *   and take the minimum.
+     *
+     * Time Complexity: O(m × n)
+     * - Each state (i, j) is computed once.
+     *
+     * Space Complexity: O(m × n)
+     * - DP table storing results for all states.
+     * - Plus recursion stack up to O(m + n).
+     */
+
+    public static int minOperations(String word1, String word2,
+                                    int i, int j, int[][] dp) {
+
+        // Word1 exhausted: insert remaining characters of word2
+        if (i == word1.length()) {
+            return word2.length() - j;
+        }
+
+        // Word2 exhausted: delete remaining characters of word1
+        if (j == word2.length()) {
+            return word1.length() - i;
+        }
+
+        // Return memoized result
+        if (dp[i][j] != -1) {
+            return dp[i][j];
+        }
+
+        // Characters match, no operation needed
+        if (word1.charAt(i) == word2.charAt(j)) {
+            return dp[i][j] =
+                    minOperations(word1, word2, i + 1, j + 1, dp);
+        }
+
+        // Insert current character of word2 into word1
+        int insert = minOperations(word1, word2, i, j + 1, dp);
+
+        // Delete current character of word1
+        int delete = minOperations(word1, word2, i + 1, j, dp);
+
+        // Replace current character of word1 with word2 character
+        int replace = minOperations(word1, word2, i + 1, j + 1, dp);
+
+        return dp[i][j] =
+                1 + Math.min(insert, Math.min(delete, replace));
+    }
+
+    public static int minDistance(String word1, String word2) {
+
+        int[][] dp = new int[word1.length()][word2.length()];
+
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+
+        return minOperations(word1, word2, 0, 0, dp);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String word1 = sc.next();
+        String word2 = sc.next();
+
+        System.out.println(
+                "Minimum operations required: " +
+                minDistance(word1,word2)
+        );
+    }
+}
