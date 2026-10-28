@@ -1,0 +1,93 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Top-Down DP (Memoization) approach for Partition Equal Subset Sum.
+     *
+     * - First, calculate the total sum of the array.
+     * - If the sum is odd, it cannot be divided into two equal subsets.
+     * - Target = totalSum / 2.
+     * - The problem reduces to finding whether a subset exists
+     *   whose sum equals the target.
+     *
+     * - State:
+     *   dp[i][target] stores:
+     *      1  -> true
+     *      0  -> false
+     *     -1  -> not computed
+     *
+     * - Choices:
+     *   1. Pick current element.
+     *   2. Skip current element.
+     *
+     * - Base Cases:
+     *   target == 0  -> subset found
+     *   i == nums.length or target < 0 -> impossible
+     *
+     * Time Complexity: O(n × target)
+     * Space Complexity: O(n × target)
+     */
+
+    public static boolean equalSubset(int[] nums, int target, int i, int[][] dp) {
+
+        if (target == 0) {
+            return true;
+        }
+
+        if (i == nums.length || target < 0) {
+            return false;
+        }
+
+        if (dp[i][target] != -1) {
+            return dp[i][target] == 1;
+        }
+
+        boolean pick = equalSubset(nums, target - nums[i], i + 1, dp);
+        boolean notPick = equalSubset(nums, target, i + 1, dp);
+
+        dp[i][target] = (pick || notPick) ? 1 : 0;
+
+        return pick || notPick;
+    }
+
+    public static boolean canPartition(int[] nums) {
+
+        int sum = 0;
+
+        for (int x : nums) {
+            sum += x;
+        }
+
+        // Odd sum can never be split into two equal subsets
+        if (sum % 2 != 0) {
+            return false;
+        }
+
+        int target = sum / 2;
+
+        int[][] dp = new int[nums.length][target + 1];
+
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+
+        return equalSubset(nums, target, 0, dp);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+
+        int[] nums = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            nums[i] = sc.nextInt();
+        }
+
+        System.out.println("Can partition into equal subsets: "
+                + canPartition(nums));
+    }
+}
