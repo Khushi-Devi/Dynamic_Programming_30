@@ -1,0 +1,78 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Top-Down DP (Memoization) approach for Minimum Path Sum.
+     *
+     * - We start from cell (0,0) and recursively explore:
+     *      1. Move Down  -> (i+1, j)
+     *      2. Move Right -> (i, j+1)
+     *
+     * - dp[i][j] stores the minimum path sum from
+     *   cell (i,j) to the destination.
+     *
+     * - Base Cases:
+     *   1. If we reach the bottom-right cell,
+     *      return its value.
+     *
+     *   2. If we go outside the grid,
+     *      return a very large value so this
+     *      path is never chosen.
+     *
+     * - Transition:
+     *   dp[i][j] = grid[i][j] +
+     *              min(down, right)
+     *
+     * Time Complexity: O(m * n)
+     * Space Complexity: O(m * n)
+     * Recursion Stack: O(m + n)
+     */
+    public static int path(int[][] grid, int i, int j, int[][] dp) {
+
+        // Destination reached
+        if (i == grid.length - 1 && j == grid[0].length - 1) {
+            return grid[i][j];
+        }
+
+        // Out of bounds
+        if (i >= grid.length || j >= grid[0].length) {
+            return 999999;
+        }
+
+        // Memoization lookup
+        if (dp[i][j] != 0) {
+            return dp[i][j];
+        }
+
+        int down = path(grid, i + 1, j, dp);
+        int right = path(grid, i, j + 1, dp);
+
+        return dp[i][j] = grid[i][j] + Math.min(down, right);
+    }
+
+    public static int minPathSum(int[][] grid) {
+
+        int[][] dp = new int[grid.length][grid[0].length];
+
+        return path(grid, 0, 0, dp);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int rows = sc.nextInt();
+        int cols = sc.nextInt();
+
+        int[][] grid = new int[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                grid[i][j] = sc.nextInt();
+            }
+        }
+
+        System.out.println("Minimum Path Sum: " + minPathSum(grid));
+    }
+}
