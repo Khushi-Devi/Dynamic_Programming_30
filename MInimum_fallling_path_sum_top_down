@@ -1,0 +1,73 @@
+import java.util.*;
+
+public class Main {
+
+    /**
+     * Top-Down DP (Memoization) approach for Minimum Falling Path Sum.
+     *
+     * - A falling path starts from any cell in the first row.
+     *
+     * - From a cell (row, col), we can move:
+     *      1. Down-Left  -> (row + 1, col - 1)
+     *      2. Down       -> (row + 1, col)
+     *      3. Down-Right -> (row + 1, col + 1)
+     *
+     * - dp[row][col] stores the minimum falling path sum
+     *   starting from cell (row, col).
+     *
+     * - Base Cases:
+     *   1. Invalid column -> return a very large value.
+     *   2. Last row -> return the current cell value.
+     *
+     * - Transition:
+     *   dp[row][col] =
+     *      matrix[row][col] +
+     *      min(left, down, right)
+     *
+     * Time Complexity: O(n²)
+     * Space Complexity: O(n²)
+     */
+    public static int minPathSum(int[][] matrix,int row,int col,int[][] dp) {
+        if (row >= matrix.length ||col < 0 ||col >= matrix[0].length) {
+            return 999999;
+        }
+        if (row == matrix.length - 1) {
+            return matrix[row][col];
+        }
+        if (dp[row][col] != Integer.MIN_VALUE) {
+            return dp[row][col];
+        }
+        int left =matrix[row][col]+ minPathSum(matrix, row + 1, col - 1, dp);
+
+        int down =matrix[row][col]+ minPathSum(matrix, row + 1, col, dp);
+
+        int right = matrix[row][col]+ minPathSum(matrix, row + 1, col + 1, dp);
+
+        return dp[row][col] =Math.min(left, Math.min(down, right));
+    }
+    public static int minFallingPathSum(int[][] matrix) {
+        int n = matrix.length;
+        int[][] dp = new int[n][n];
+        for (int[] row : dp) {
+            Arrays.fill(row, Integer.MIN_VALUE);
+        }
+        int min = Integer.MAX_VALUE;
+        // Try every starting column in the first row
+        for (int col = 0; col < n; col++) {
+            min = Math.min( min, minPathSum(matrix, 0, col, dp)
+            );
+        }
+        return min;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[][] matrix = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = sc.nextInt();
+            }
+        }
+        System.out.println("Minimum Falling Path Sum: "+ minFallingPathSum(matrix));
+    }
+}
